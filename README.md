@@ -96,16 +96,74 @@ xcodegen generate
 
 ### 3. macOS type=3 JAR 运行时（可选）
 
-仅 macOS 版需要。先提取 Yingxia 的 JavaHost：
+仅 macOS 版需要。JavaHost 是 GPL-3.0 运行时且体积较大，公开仓库**不包含**其二进制，fork 后需要在本机自行获取。
+
+#### Fork 用户
 
 ```bash
+git clone https://github.com/vanilla945/tvbox-swift-macos.git
+cd tvbox-swift-macos
 ./scripts/fetch-yingxia-runtime.sh
 ```
 
-脚本会下载官方 DMG，并把 `JavaHost/` 放到 `vendor/yingxia-java-host/`。
-该目录已加入 `.gitignore`，不会提交到仓库。
+脚本会按当前 Mac 架构（`arm64` / `x86_64`）下载 Yingxia DMG，并提取到：
 
-> 运行时来自 GPL-3.0 项目 Yingxia，仅用于本机私人使用；对外分发包含该运行时的 App 时需遵守 GPL-3.0。
+```text
+vendor/yingxia-java-host/JavaHost/
+```
+
+该目录已加入 `.gitignore`，不要提交到仓库。
+
+构建前可以确认运行时文件存在：
+
+```bash
+ls vendor/yingxia-java-host/JavaHost/host.jar
+ls vendor/yingxia-java-host/JavaHost/jre/bin/java
+```
+
+然后按正常流程构建：
+
+```bash
+./package_mac.sh
+```
+
+或直接打开 `tvbox.xcodeproj`，选择 `tvbox-macOS` scheme 运行。
+
+#### 下载地址失效或指定版本
+
+默认版本为 `1.7.5`，可通过环境变量指定：
+
+```bash
+YINGXIA_VERSION=1.7.5 ./scripts/fetch-yingxia-runtime.sh --force
+```
+
+也可以把对应 DMG 放到：
+
+```text
+vendor/yingxia-java-host/Yingxia-1.7.5-arm64.dmg
+```
+
+再运行脚本；文件已存在时会跳过下载。
+
+如果 DMG 也无法获取，可手动准备以下目录：
+
+```text
+vendor/yingxia-java-host/JavaHost/
+├── host.jar
+├── jre/bin/java
+└── lib/
+```
+
+只要 `host.jar` 和可执行的 `jre/bin/java` 存在，App 就能使用 JAR 运行时。
+
+#### 许可证
+
+- 本仓库代码使用 MIT License；
+- Yingxia JavaHost 使用 GPL-3.0-only，并包含 Unicorn 等第三方组件；
+- 只在本机使用：运行获取脚本即可；
+- 如果要分发包含 JavaHost 的 App/DMG，必须遵守 GPL-3.0，提供对应源码、许可证和 NOTICE，不能只按 MIT 分发。
+
+如果只使用普通 `type=0/1/4` JSON/XML 数据源，可以完全跳过 JavaHost；App 仍可构建和使用，只是 `type=3` 的 `csp_*` JAR 源不可用。
 
 ### 4. 构建与运行
 打开刚刚使用 XcodeGen 生成的 `tvbox.xcodeproj`：
