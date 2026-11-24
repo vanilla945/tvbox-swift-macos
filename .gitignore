@@ -1,0 +1,23 @@
+.DS_Store
+/.build
+/Packages
+xcuserdata/
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+/build
+TVBox-*.dmg
+*.py
+/IOS-key
+/TVBox.ipa
+/ExportOptions.plist
+.kiro
+image_cache
+
+# Yingxia JavaHost: GPL runtime, fetched locally and never committed
+/vendor/yingxia-java-host/JavaHost/*
+!/vendor/yingxia-java-host/JavaHost/.gitkeep
+/vendor/yingxia-java-host/*.dmg
+/vendor/yingxia-java-host/*.dmg.tmp
+/vendor/yingxia-java-host/NOTICE.md
